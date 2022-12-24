@@ -22,16 +22,21 @@ const SignUp = ({ setUserData }) => {
       if (!res.data.status) {
         alert(res.data?.message?.alert_message ? res.data?.message?.alert_message : "Something went wrong please try later.");
         setState(false);
-        return;
+        setUserData((prevState) => ({
+          ...prevState,
+          data: res.data.message,
+          isAdded: true,
+        }));
+        history("/");
       }
-      setUserData((prevState) => ({
-        ...prevState,
-        data: res.data.message,
-        isAdded: true,
-      }));
-      history("/");
+      // setUserData((prevState) => ({
+      //   ...prevState,
+      //   data: res.data.message,
+      //   isAdded: true,
+      // }));
+      // history("/");
     } catch (error) {
-      alert("Something went wrong please try later.");
+      //alert("Something went wrong please try later.");
       setState(false);
     }
   };
