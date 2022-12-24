@@ -19,18 +19,20 @@ const SignUp = ({ setUserData }) => {
         api_key: "Z9Q7WKEY7ORGBUFGN3EG1QS5Y7FG8DU29GHKKSZH",
       };
       let res = await axios.post("https://lobster-app-ddwng.ondigitalocean.app/user/register", data, { headers });
+      //console.log("await=>",res)
       if (!res.data.status) {
-        alert(res.data?.message?.alert_message ? res.data?.message?.alert_message : "Something went wrong please try later.");
+        alert(res.data?.message ? JSON.stringify(res.data?.message) : "Something went wrong please try later.");
         setState(false);
-       setUserData((prevState) => ({
+        return;
+      }
+      setUserData((prevState) => ({
         ...prevState,
         data: res.data.message,
         isAdded: true,
       }));
       history("/");
-      }
     } catch (error) {
-      //alert("Something went wrong please try later.");
+      alert("Something went wrong please try later.");
       setState(false);
     }
   };
@@ -42,11 +44,15 @@ const SignUp = ({ setUserData }) => {
         <p>Create your company accounts</p>
         <div className='form'>
           <form onSubmit={handleSubmit(onSubmit)} autoComplete='off'>
-            <input type='text' autoComplete='off' placeholder='Full name*' {...register("full_name", { required: true })} />
+            <input type='text' autoComplete='off' placeholder='Full name*' {...register("full_name", { required: true, maxLength: 30,pattern:/[A-Za-z]/ })} />
             {errors.full_name && errors.full_name.type === "required" && <div className='errors'>This is required</div>}
+            {errors.full_name && errors.full_name.type === "pattern" && <div className='errors'>allowOnly Alphabets</div> }
+            {errors.full_name && errors.full_name.type === "maxLength" && <div className='errors'>Limit exceeds,allowed 30 chars</div> }
 
-            <input type='text' autoComplete='off' placeholder='Full name*' {...register("username", { required: true })} />
+            <input type='text' autoComplete='off' placeholder='Full name*' {...register("username", { required: true, maxLength: 30,pattern:/[A-Za-z]/ })} />
             {errors.username && errors.username.type === "required" && <div className='errors'>This is required</div>}
+            {errors.username && errors.username.type === "maxLength" && <div className='errors'>Limit exceeds,allowed 30 chars</div>}
+            {errors.username && errors.username.type === "pattern" && <div className='errors'>allowOnly Alphabets</div>}
 
             <select {...register("country_row_id", { required: true })}>
               <option value=''>Select Country*</option>
@@ -54,10 +60,11 @@ const SignUp = ({ setUserData }) => {
             </select>
             {errors.country_row_id && errors.country_row_id.type === "required" && <div className='errors'>This is required</div>}
 
-            <input type='text' autoComplete='off' placeholder='Mobile Number*' {...register("mobile_number", { required: true })} />
+            <input type='text' autoComplete='off' placeholder='Mobile Number*' {...register("mobile_number", { required: true,maxLength:10 ,pattern:/[0-9]/})} />
             {errors.mobile_number && errors.mobile_number.type === "required" && <div className='errors'>This is required</div>}
+            {errors.mobile_number && errors.mobile_number.type === "maxLength" && <div className='errors'>Limit exceeds,allowed 10 chars</div>}
 
-            <input type='text' autoComplete='off' placeholder='Email ID*' {...register("email_id", { required: true })} />
+            <input type='email' autoComplete='off' placeholder='Email ID*' {...register("email_id", { required: true })} />
             {errors.email_id && errors.email_id.type === "required" && <div className='errors'>This is required</div>}
 
             <input type='password' autoComplete='off' placeholder='Password' {...register("password", { required: true })} />
@@ -73,3 +80,4 @@ const SignUp = ({ setUserData }) => {
   );
 };
 export default SignUp;
+
